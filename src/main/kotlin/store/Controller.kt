@@ -4,6 +4,7 @@ import store.view.InputView
 import store.view.OutputView
 import store.model.Stock
 import store.model.Purchase
+import store.model.Promotion
 
 class Controller {
     private val inputView = InputView()
@@ -14,7 +15,7 @@ class Controller {
     fun start() {
         val stock = showStock()
         val order = purchase(stock)
-        val checkPromotion = promotion(stock, order)
+        val promotions = Promotion().promotions
     }
 
     private fun showStock(): MutableList<MutableList<String>> {
@@ -27,10 +28,5 @@ class Controller {
     private fun purchase(stock: MutableList<MutableList<String>>): MutableMap<String, Int> {
         val buy = inputView.readItem()
         return Purchase(buy, stock).needs
-
-    }
-
-    private fun promotion(stock: MutableList<MutableList<String>>, order: MutableMap<String, Int>) {
-
     }
 }

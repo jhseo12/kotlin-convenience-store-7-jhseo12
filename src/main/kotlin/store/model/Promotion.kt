@@ -53,10 +53,10 @@ class Promotion() {
         eachPromotion: MutableList<String>,
         promotion: MutableList<String>
     ) {
-        promotion.add(eachPromotion[0])
-        promotion.add(eachPromotion[1])
-        promotion.add(eachPromotion[2])
-        if (date in startDate..endDate) promotion.add("Y")
-        else promotion.add("N")
+        if (date in startDate..endDate) {
+            promotion.add(eachPromotion[0])
+            promotion.add(eachPromotion[1])
+            promotion.add(eachPromotion[2])
+        }
     }
 }

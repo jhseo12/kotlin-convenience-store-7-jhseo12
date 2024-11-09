@@ -1,9 +1,6 @@
 package store.model
 
-class Purchase(
-    private val input: String,
-    private val stock: MutableList<MutableList<String>>
-) {
+class Purchase(private val input: String) {
     val needs = mutableMapOf<String, Int>()
 
     init {
@@ -18,7 +15,7 @@ class Purchase(
                 val matchedPattern = pattern.matchEntire(eachItem)
                 needs[matchedPattern!!.groupValues[1]] = matchedPattern.groupValues[2].toInt()
             }
-        } catch(error: NumberFormatException) {
+        } catch (error: NumberFormatException) {
             throw IllegalArgumentException()
         }
     }

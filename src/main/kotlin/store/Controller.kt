@@ -11,13 +11,14 @@ class Controller {
 
     private val stock = Stock()
     private val checkPromotion = CheckPromotion()
+    val validator = Validator()
 
     fun start() {
         val stock = showStock()
         val promotions = Promotion().promotions
 
         val order = purchase(stock)
-        val buyItem = PurchaseStock().getOrderedStock(stock, order) // 구매할 상품에 대한 재고 내역
+        val buyItem = PurchaseStock().getOrderedStock(stock, order)
         findPromotion(order, buyItem, promotions)
         val member = memberPromotion()
         receipt(order, buyItem, member, promotions)
@@ -61,25 +62,43 @@ class Controller {
         val promotion = checkPromotion.promotionItem(value, orderStock, promotions)
         if (promotion[1] == 0) {
             if (promotion[0] != 0) {
-                val isAdd = inputView.readAddPromotion(item, promotion[0])
-                if (isAdd == "Y") { // 무료 수량 추가
-                    order[item] = order[item]!! + promotion[0]
-                }
+                addPromotion(order, item, promotion)
             }
         }
         if (promotion[1] == 1) {
             if (promotion[0] != 0) {
-                val isPromotion = inputView.readNoPromotion(item, promotion[0])
-                if (isPromotion == "N") { // 정가 결제
-                    order[item] = order[item]!! - promotion[0]
-                }
+                noPromotion(order, item, promotion)
             }
         }
     }
 
+    private fun addPromotion(order: MutableMap<String, Int>, item: String, promotion: List<Int>) {
+        while(true){
+            val isAdd = inputView.readAddPromotion(item, promotion[0])
+            validator.validatePromotionInput(isAdd)
+            if (isAdd == "Y") { // 무료 수량 추가
+                order[item] = order[item]!! + promotion[0]
+            }
+        }
+    }
+
+    private fun noPromotion(order: MutableMap<String, Int>, item: String, promotion: List<Int>) {
+        while(true) {
+            val isPromotion = inputView.readNoPromotion(item, promotion[0])
+            validator.validatePromotionInput(isPromotion)
+            if (isPromotion == "N") { // 정가 결제
+                order[item] = order[item]!! - promotion[0]
+            }
+        }
+    }
+
+
     private fun memberPromotion(): Int {
-        val member = inputView.readMemberPromotion()
-        return if (member == "Y") 1 else 0
+        while(true) {
+            val member = inputView.readMemberPromotion()
+            validator.validatePromotionInput(member)
+            return if (member == "Y") 1 else 0
+        }
     }
 
     private fun receipt(

@@ -8,8 +8,18 @@ class Validator {
             var allStock = 0
             stock.filter { it.name == name }.forEach { item ->
                 allStock += item.quantity
-                throw (IllegalArgumentException("[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요."))
+                throw IllegalArgumentException("[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.")
             }
+        }
+    }
+
+    fun validatePromotionInput(input: String) {
+        try {
+            if (input == "Y" || input == "N") {
+                throw IllegalArgumentException("[ERROR] 잘못된 입력입니다. 다시 입력해 주세요.")
+            }
+        } catch (error: IllegalArgumentException) {
+            println(error.message)
         }
     }
 }

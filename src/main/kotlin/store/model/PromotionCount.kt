@@ -2,8 +2,8 @@ package store.model
 
 import store.utils.Item
 
-class PromotionPrice {
-    fun promotionPrice(
+class PromotionCount {
+    fun promotionCount(
         order: MutableMap<String, Int>,
         buyItem: List<Item>,
         promotions: List<List<String>>

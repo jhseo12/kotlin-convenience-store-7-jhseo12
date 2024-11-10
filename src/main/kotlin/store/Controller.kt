@@ -85,12 +85,23 @@ class Controller {
         promotions: List<List<String>>
     ) {
         outputView.printReceiptCategory(order, buyItem)
-        val promotionPrice = PromotionPrice().promotionPrice(order, buyItem, promotions)
-        outputView.printReceiptPromotion(promotionPrice, buyItem)
+        val promotionCount = PromotionCount().promotionCount(order, buyItem, promotions)
+        outputView.printReceiptPromotion(promotionCount)
         var allCount = 0
         order.forEach { (item, value) ->
             allCount += value
         }
-        outputView.printReceipt(allCount)
+        val allCalculate = CalculateAll(order, buyItem, promotionCount)
+        val allPrice = allCalculate.allPrice
+        val allPromotionPrice = allCalculate.allPromotionPrice
+        if (member == 1){
+            val noPromotion = allCalculate.allNoPromotionPrice
+            val memberPromotion = (noPromotion) * 30 / 100
+            outputView.printReceipt(allCount, allPrice, allPromotionPrice, memberPromotion)
+        }
+        else {
+            val memberPromotion = 0
+            outputView.printReceipt(allCount, allPrice, allPromotionPrice, memberPromotion)
+        }
     }
 }

@@ -1,12 +1,14 @@
 package store.model
 
+import store.utils.Item
+
 class PurchaseStock {
-    private val buyItem = mutableListOf<MutableList<String>>()
+    private val buyItem = mutableListOf<Item>()
 
     fun getOrderedStock(
-        stock: MutableList<MutableList<String>>,
+        stock: List<Item>,
         order: MutableMap<String, Int>
-    ): MutableList<MutableList<String>> {
+    ): List<Item> {
         order.forEach { (key) ->
             addOrderedStock(stock, key)
         }
@@ -14,11 +16,11 @@ class PurchaseStock {
     }
 
     private fun addOrderedStock(
-        stock: MutableList<MutableList<String>>,
+        stock: List<Item>,
         key: String
     ) {
         stock.forEach { stockItem ->
-            if (key == stockItem[0]) {
+            if (key == stockItem.name) {
                 buyItem.add(stockItem)
             }
         }

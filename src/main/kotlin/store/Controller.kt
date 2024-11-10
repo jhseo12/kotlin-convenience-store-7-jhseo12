@@ -1,6 +1,7 @@
 package store
 
 import store.model.*
+import store.utils.Item
 import store.view.InputView
 import store.view.OutputView
 
@@ -17,10 +18,12 @@ class Controller {
         val promotions = Promotion().promotions
         val buyItem = PurchaseStock().getOrderedStock(stock, order) // 구매할 상품에 대한 재고 내역
         findPromotion(order, buyItem, promotions)
+        val member = memberPromotion()
+        receipt(order, buyItem)
     }
 
-    private fun showStock(): MutableList<MutableList<String>> {
-        val infoStock = stock.stock()
+    private fun showStock(): List<Item>  {
+        val infoStock = stock.stock
         outputView.printStockNotice()
         outputView.printStock(infoStock)
         return infoStock
@@ -33,11 +36,11 @@ class Controller {
 
     private fun findPromotion(
         order: MutableMap<String, Int>,
-        buyItem: MutableList<MutableList<String>>,
+        buyItem: List<Item>,
         promotions: MutableList<MutableList<String>>
     ) {
         order.forEach { (item, value) ->
-            val orderStock = buyItem.filter { it[0] == item }
+            val orderStock = buyItem.filter { it.name.contains(item)}
             if (orderStock.size == 2) {
                 onlyPromotion(item, value, order, orderStock, promotions)
             }
@@ -48,7 +51,7 @@ class Controller {
         item: String,
         value: Int,
         order: MutableMap<String, Int>,
-        orderStock: List<MutableList<String>>,
+        orderStock: List<Item>,
         promotions: MutableList<MutableList<String>>
     ) {
         val promotion = checkPromotion.promotionItem(value, orderStock, promotions)
@@ -74,7 +77,9 @@ class Controller {
         val member = inputView.readMemberPromotion()
     }
 
-    private fun receipt() {
-
+    private fun receipt(order: MutableMap<String, Int>, buyItem: List<Item>) {
+        outputView.printReceiptCategory()
+        outputView.printReceiptPromotion()
+        outputView.printReceipt()
     }
 }

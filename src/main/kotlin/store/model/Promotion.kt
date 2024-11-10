@@ -26,7 +26,7 @@ class Promotion() {
     }
 
     private fun getPromotion(reader: BufferedReader) {
-        reader.lines().forEach { line ->
+        reader.lineSequence().forEach { line ->
             val linePromotion = line.split(",").toMutableList()
             readPromotion.add(linePromotion)
         }

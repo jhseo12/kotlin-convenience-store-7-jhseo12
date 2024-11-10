@@ -19,10 +19,10 @@ class Controller {
         val buyItem = PurchaseStock().getOrderedStock(stock, order) // 구매할 상품에 대한 재고 내역
         findPromotion(order, buyItem, promotions)
         val member = memberPromotion()
-        receipt(order, buyItem)
+        receipt(order, buyItem, member, promotions)
     }
 
-    private fun showStock(): List<Item>  {
+    private fun showStock(): List<Item> {
         val infoStock = stock.stock
         outputView.printStockNotice()
         outputView.printStock(infoStock)
@@ -37,10 +37,10 @@ class Controller {
     private fun findPromotion(
         order: MutableMap<String, Int>,
         buyItem: List<Item>,
-        promotions: MutableList<MutableList<String>>
+        promotions: List<List<String>>
     ) {
         order.forEach { (item, value) ->
-            val orderStock = buyItem.filter { it.name.contains(item)}
+            val orderStock = buyItem.filter { it.name.contains(item) }
             if (orderStock.size == 2) {
                 onlyPromotion(item, value, order, orderStock, promotions)
             }
@@ -52,7 +52,7 @@ class Controller {
         value: Int,
         order: MutableMap<String, Int>,
         orderStock: List<Item>,
-        promotions: MutableList<MutableList<String>>
+        promotions: List<List<String>>
     ) {
         val promotion = checkPromotion.promotionItem(value, orderStock, promotions)
         if (promotion[1] == 0) {
@@ -73,13 +73,24 @@ class Controller {
         }
     }
 
-    private fun memberPromotion() {
+    private fun memberPromotion(): Int {
         val member = inputView.readMemberPromotion()
+        return if (member == "Y") 1 else 0
     }
 
-    private fun receipt(order: MutableMap<String, Int>, buyItem: List<Item>) {
-        outputView.printReceiptCategory()
-        outputView.printReceiptPromotion()
-        outputView.printReceipt()
+    private fun receipt(
+        order: MutableMap<String, Int>,
+        buyItem: List<Item>,
+        member: Int,
+        promotions: List<List<String>>
+    ) {
+        outputView.printReceiptCategory(order, buyItem)
+        val promotionPrice = PromotionPrice().promotionPrice(order, buyItem, promotions)
+        outputView.printReceiptPromotion(promotionPrice, buyItem)
+        var allCount = 0
+        order.forEach { (item, value) ->
+            allCount += value
+        }
+        outputView.printReceipt(allCount)
     }
 }

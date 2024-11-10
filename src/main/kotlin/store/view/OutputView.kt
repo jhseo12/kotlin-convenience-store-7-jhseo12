@@ -1,5 +1,6 @@
 package store.view
 
+import store.model.PromotionPrice
 import store.utils.Item
 import java.text.DecimalFormat
 
@@ -26,19 +27,33 @@ class OutputView {
         else sb.append(item.promotion).append("\n")
     }
 
-    fun printReceiptCategory() {
+    fun printReceiptCategory(
+        order: MutableMap<String, Int>,
+        buyItem: List<Item>,
+    ) {
         println("==============W 편의점================")
-        println("상품명\t\t수량\t금액")
-
+        println("상품명\t\t\t\t수량\t\t금액")
+        order.forEach { item ->
+            val name = item.key
+            val count = item.value
+            val total = buyItem.find { it.name == item.key }?.price?.times(item.value)
+            println("${name}\t\t\t\t${count}\t\t${total}")
+        }
     }
 
-    fun printReceiptPromotion() {
-        println("=============증\t정===============")
+    fun printReceiptPromotion(
+        promotionPrice: MutableMap<String, Int>,
+        buyItem: List<Item>
+    ) {
+        println("=============증\t\t정===============")
+        promotionPrice.forEach { (name, free) ->
+            println("${name}\t\t\t\t${free}")
+        }
     }
 
-    fun printReceipt() {
+    fun printReceipt(allCount: Int) {
         println("====================================")
-        println("총구매액\t\t10\t10,000")
+        println("총구매액\t\t${allCount}\t10,000")
         println("행사할인\t\t\t-2,000")
         println("멤버십할인\t\t\t-0")
         println("내실돈\t\t\t 8,000")

@@ -6,7 +6,7 @@ class CheckPromotion {
     fun promotionItem(
         value: Int,
         orderStock: List<Item>,
-        promotions: MutableList<MutableList<String>>
+        promotions: List<List<String>>
     ): List<Int> {
         val remain = mutableListOf<Int>()
         val promotionStock = orderStock.filter { it.promotion != "null" }[0]

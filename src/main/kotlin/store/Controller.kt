@@ -14,8 +14,9 @@ class Controller {
 
     fun start() {
         val stock = showStock()
-        val order = purchase()
         val promotions = Promotion().promotions
+
+        val order = purchase(stock)
         val buyItem = PurchaseStock().getOrderedStock(stock, order) // 구매할 상품에 대한 재고 내역
         findPromotion(order, buyItem, promotions)
         val member = memberPromotion()
@@ -29,9 +30,12 @@ class Controller {
         return infoStock
     }
 
-    private fun purchase(): MutableMap<String, Int> {
-        val readOrder = inputView.readItem()
-        return Purchase(readOrder).needs
+    private fun purchase(stock: List<Item>): MutableMap<String, Int> {
+        while(true) {
+            val readOrder = inputView.readItem()
+            val order = Purchase(readOrder, stock).needs
+            return order
+        }
     }
 
     private fun findPromotion(

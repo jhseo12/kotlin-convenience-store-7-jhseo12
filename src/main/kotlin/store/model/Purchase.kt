@@ -1,22 +1,35 @@
 package store.model
 
-class Purchase(private val input: String) {
+import store.utils.Item
+
+class Purchase(private val input: String, private val stock: List<Item>) {
     val needs = mutableMapOf<String, Int>()
+    private val validator = Validator()
 
     init {
-        order()
+        orderPurchase()
+    }
+
+    private fun orderPurchase() {
+        try {
+            order()
+            validator.overStock(needs, stock)
+        } catch (error: IllegalArgumentException) {
+            println(error.message)
+        }
     }
 
     private fun order() {
         try {
-            val list = input.split(",")
-            list.forEach() { eachItem ->
+            val orders = input.split(",")
+            orders.forEach() { eachItem ->
                 val pattern = Regex("""\[(\D+)-(\d+)]""")
                 val matchedPattern = pattern.matchEntire(eachItem)
-                needs[matchedPattern!!.groupValues[1]] = matchedPattern.groupValues[2].toInt()
+                    ?: throw IllegalArgumentException("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.")
+                needs[matchedPattern.groupValues[1]] = matchedPattern.groupValues[2].toInt()
             }
         } catch (error: NumberFormatException) {
-            throw IllegalArgumentException()
+            throw IllegalArgumentException("[ERROR] 잘못된 입력입니다. 다시 입력해 주세요.")
         }
     }
 }

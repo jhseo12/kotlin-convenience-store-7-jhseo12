@@ -18,10 +18,10 @@ class Promotion() {
         val stream = javaClass.getResourceAsStream(nowPromotion)?.let { InputStreamReader(it) }
         if (stream != null) {
             BufferedReader(stream).use { reader ->
+                reader.readLine()
                 getPromotion(reader)
             }
         }
-        readPromotion.removeFirst()
         checkTime()
     }
 
@@ -42,7 +42,9 @@ class Promotion() {
 
             val promotion = mutableListOf<String>()
             setPromotion(startDate, endDate, date, eachPromotion, promotion)
-            promotions.add(promotion)
+            if(promotion.size == 3) {
+                promotions.add(promotion)
+            }
         }
     }
 

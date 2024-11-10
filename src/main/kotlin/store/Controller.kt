@@ -11,12 +11,11 @@ class Controller {
 
     private val stock = Stock()
     private val checkPromotion = CheckPromotion()
-    val validator = Validator()
+    private val validator = Validator()
 
-    fun start() {
+    fun run() {
         val stock = showStock()
         val promotions = Promotion().promotions
-
         val order = purchase(stock)
         val buyItem = PurchaseStock().getOrderedStock(stock, order)
         findPromotion(order, buyItem, promotions)
@@ -32,11 +31,9 @@ class Controller {
     }
 
     private fun purchase(stock: List<Item>): MutableMap<String, Int> {
-        while(true) {
-            val readOrder = inputView.readItem()
-            val order = Purchase(readOrder, stock).needs
-            return order
-        }
+        val readOrder = inputView.readItem()
+        val order = Purchase(readOrder, stock).needs
+        return order
     }
 
     private fun findPromotion(
@@ -73,30 +70,35 @@ class Controller {
     }
 
     private fun addPromotion(order: MutableMap<String, Int>, item: String, promotion: List<Int>) {
-        while(true){
+        while (true) {
             val isAdd = inputView.readAddPromotion(item, promotion[0])
-            validator.validatePromotionInput(isAdd)
+            val repeat = validator.validatePromotionInput(isAdd)
+            if (repeat) continue
             if (isAdd == "Y") { // 무료 수량 추가
                 order[item] = order[item]!! + promotion[0]
             }
+            break
         }
     }
 
     private fun noPromotion(order: MutableMap<String, Int>, item: String, promotion: List<Int>) {
-        while(true) {
+        while (true) {
             val isPromotion = inputView.readNoPromotion(item, promotion[0])
-            validator.validatePromotionInput(isPromotion)
-            if (isPromotion == "N") { // 정가 결제
+            val repeat = validator.validatePromotionInput(isPromotion)
+            if (repeat) continue
+            if (isPromotion == "N") {
                 order[item] = order[item]!! - promotion[0]
             }
+            break
         }
     }
 
 
     private fun memberPromotion(): Int {
-        while(true) {
+        while (true) {
             val member = inputView.readMemberPromotion()
-            validator.validatePromotionInput(member)
+            val repeat = validator.validatePromotionInput(member)
+            if (repeat) continue
             return if (member == "Y") 1 else 0
         }
     }
@@ -117,14 +119,22 @@ class Controller {
         val allCalculate = CalculateAll(order, buyItem, promotionCount)
         val allPrice = allCalculate.allPrice
         val allPromotionPrice = allCalculate.allPromotionPrice
-        if (member == 1){
+        if (member == 1) {
             val noPromotion = allCalculate.allNoPromotionPrice
             val memberPromotion = (noPromotion) * 30 / 100
             outputView.printReceipt(allCount, allPrice, allPromotionPrice, memberPromotion)
-        }
-        else {
+        } else {
             val memberPromotion = 0
             outputView.printReceipt(allCount, allPrice, allPromotionPrice, memberPromotion)
+        }
+    }
+
+    private fun keepShopping(): String {
+        while (true) {
+            val isKeep = inputView.keep()
+            val repeat = validator.validatePromotionInput(isKeep)
+            if (repeat) continue
+            return isKeep
         }
     }
 }

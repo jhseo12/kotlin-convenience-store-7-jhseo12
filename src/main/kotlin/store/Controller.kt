@@ -4,18 +4,25 @@ import store.model.*
 import store.utils.Item
 import store.view.InputView
 import store.view.OutputView
+import java.awt.Point
 
 class Controller {
     private val inputView = InputView()
     private val outputView = OutputView()
 
-    private val stock = Stock()
     private val checkPromotion = CheckPromotion()
     private val validator = Validator()
 
     fun run() {
-        val stock = showStock()
-        val promotions = Promotion().promotions
+        while(true) {
+            val stock = showStock()
+            val promotions = Promotion().promotions
+            pointOfSales(stock, promotions)
+            if (keepShopping() == "N") break
+        }
+    }
+
+    private fun pointOfSales(stock: List<Item>, promotions: MutableList<MutableList<String>>) {
         val order = purchase(stock)
         val buyItem = PurchaseStock().getOrderedStock(stock, order)
         findPromotion(order, buyItem, promotions)
@@ -24,7 +31,7 @@ class Controller {
     }
 
     private fun showStock(): List<Item> {
-        val infoStock = stock.stock
+        val infoStock = Stock().stock
         outputView.printStockNotice()
         outputView.printStock(infoStock)
         return infoStock

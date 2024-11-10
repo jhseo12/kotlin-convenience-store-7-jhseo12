@@ -31,9 +31,13 @@ class Controller {
     }
 
     private fun purchase(stock: List<Item>): MutableMap<String, Int> {
-        val readOrder = inputView.readItem()
-        val order = Purchase(readOrder, stock).needs
-        return order
+        while(true) {
+            val readOrder = inputView.readItem()
+            val purchase = Purchase()
+            val order = purchase.orderPurchase(readOrder, stock)
+            if (purchase.repeat) continue
+            return order
+        }
     }
 
     private fun findPromotion(

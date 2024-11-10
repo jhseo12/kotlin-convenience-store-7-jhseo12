@@ -2,24 +2,24 @@ package store.model
 
 import store.utils.Item
 
-class Purchase(private val input: String, private val stock: List<Item>) {
-    val needs = mutableMapOf<String, Int>()
-    private val validator = Validator()
+class Purchase {
+    var repeat = false
 
-    init {
-        orderPurchase()
-    }
-
-    private fun orderPurchase() {
+    fun orderPurchase(input: String, stock: List<Item>): MutableMap<String, Int> {
+        val needs = mutableMapOf<String, Int>()
         try {
-            order()
+            order(needs, input)
+            val validator = Validator()
             validator.overStock(needs, stock)
+            repeat = false
         } catch (error: IllegalArgumentException) {
             println(error.message)
+            repeat = true
         }
+        return needs
     }
 
-    private fun order() {
+    private fun order(needs: MutableMap<String, Int>, input: String) {
         try {
             val orders = input.split(",")
             orders.forEach() { eachItem ->

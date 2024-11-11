@@ -4,41 +4,46 @@ import store.model.*
 import store.utils.Item
 import store.view.InputView
 import store.view.OutputView
-import java.awt.Point
 
 class Controller {
     private val inputView = InputView()
     private val outputView = OutputView()
 
+    private val initStock = Stock()
     private val checkPromotion = CheckPromotion()
     private val validator = Validator()
 
     fun run() {
-        while(true) {
-            val stock = showStock()
+        val infoStock = initStock.stock
+        while (true) {
+            val stock = showStock(infoStock)
             val promotions = Promotion().promotions
-            pointOfSales(stock, promotions)
+            val order = pointOfSales(stock, promotions)
             if (keepShopping() == "N") break
+            StockUpdate(stock, order, promotions)
         }
     }
 
-    private fun pointOfSales(stock: List<Item>, promotions: MutableList<MutableList<String>>) {
+    private fun pointOfSales(
+        stock: List<Item>,
+        promotions: MutableList<MutableList<String>>
+    ): MutableMap<String, Int> {
         val order = purchase(stock)
         val buyItem = PurchaseStock().getOrderedStock(stock, order)
         findPromotion(order, buyItem, promotions)
         val member = memberPromotion()
         receipt(order, buyItem, member, promotions)
+        return order
     }
 
-    private fun showStock(): List<Item> {
-        val infoStock = Stock().stock
+    private fun showStock(stock: MutableList<Item>): MutableList<Item> {
         outputView.printStockNotice()
-        outputView.printStock(infoStock)
-        return infoStock
+        outputView.printStock(stock)
+        return stock
     }
 
     private fun purchase(stock: List<Item>): MutableMap<String, Int> {
-        while(true) {
+        while (true) {
             val readOrder = inputView.readItem()
             val purchase = Purchase()
             val order = purchase.orderPurchase(readOrder, stock)

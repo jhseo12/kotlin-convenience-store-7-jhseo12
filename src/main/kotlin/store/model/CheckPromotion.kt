@@ -9,7 +9,7 @@ class CheckPromotion {
         promotions: List<List<String>>
     ): List<Int> {
         val remain = mutableListOf<Int>()
-        val promotionStockList = orderStock.filter { it.promotion != "null" }
+        val promotionStockList = orderStock.filter { it.promotion != NULL }
         if (promotionStockList.isEmpty()) {
             remain.add(0)
             remain.add(2)
@@ -49,5 +49,10 @@ class CheckPromotion {
         remain.add(0)
         remain.add(2)
         return remain
+    }
+
+    companion object {
+        private const val NULL = "null"
+        private const val ADD = 0
     }
 }

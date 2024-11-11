@@ -1,5 +1,6 @@
 package store.model
 
+import store.utils.ErrorMessages
 import store.utils.Item
 
 class Validator {
@@ -10,7 +11,7 @@ class Validator {
                 allStock += item.quantity
             }
             if (allStock < value) {
-                throw IllegalArgumentException("[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.")
+                throw IllegalArgumentException(ErrorMessages.OVER_STOCK.message)
             }
         }
     }
@@ -19,7 +20,7 @@ class Validator {
         var repeat = false
         try {
             if (!(input == "Y" || input == "N")) {
-                throw IllegalArgumentException("[ERROR] 잘못된 입력입니다. 다시 입력해 주세요.")
+                throw IllegalArgumentException(ErrorMessages.WRONG_INPUT.message)
             }
         } catch (error: IllegalArgumentException) {
             println(error.message)

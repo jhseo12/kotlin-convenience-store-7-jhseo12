@@ -6,7 +6,7 @@ import java.io.InputStreamReader
 
 class Stock {
     val stock = mutableListOf<Item>()
-    private val nowStock = "/products.md"
+    private val nowStock = GET_STOCKS
 
     init {
         makeStock()
@@ -31,7 +31,7 @@ class Stock {
         return readFile
     }
 
-    private fun getStock(readFile: MutableList<MutableList<String>>) {
+    fun getStock(readFile: MutableList<MutableList<String>>) {
         val items = readFile.map { it[0] }.distinct()
         items.forEach { item ->
             val lookItem = readFile.filter { it[0].contains(item) }
@@ -65,5 +65,9 @@ class Stock {
         stock.add(
             Item(name, price, quantity, promotion)
         )
+    }
+
+    companion object {
+        private const val GET_STOCKS = "/products.md"
     }
 }

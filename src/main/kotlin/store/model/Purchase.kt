@@ -1,5 +1,6 @@
 package store.model
 
+import store.utils.ErrorMessages
 import store.utils.Item
 
 class Purchase {
@@ -21,15 +22,22 @@ class Purchase {
 
     private fun order(needs: MutableMap<String, Int>, input: String) {
         try {
-            val orders = input.split(",")
+            val orders = input.split(DIVIDER)
             orders.forEach() { eachItem ->
-                val pattern = Regex("""\[(\D+)-(\d+)]""")
+                val pattern = Regex(PATTERN)
                 val matchedPattern = pattern.matchEntire(eachItem)
-                    ?: throw IllegalArgumentException("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.")
-                needs[matchedPattern.groupValues[1]] = matchedPattern.groupValues[2].toInt()
+                    ?: throw IllegalArgumentException(ErrorMessages.WRONG_FORM.message)
+                needs[matchedPattern.groupValues[FIRST_GROUP]] = matchedPattern.groupValues[SECOND_GROUP].toInt()
             }
         } catch (error: NumberFormatException) {
-            throw IllegalArgumentException("[ERROR] 잘못된 입력입니다. 다시 입력해 주세요.")
+            throw IllegalArgumentException(ErrorMessages.WRONG_INPUT.message)
         }
+    }
+
+    companion object {
+        private const val DIVIDER = ","
+        private const val PATTERN = """\[(\D+)-(\d+)]"""
+        private const val FIRST_GROUP = 1
+        private const val SECOND_GROUP = 2
     }
 }

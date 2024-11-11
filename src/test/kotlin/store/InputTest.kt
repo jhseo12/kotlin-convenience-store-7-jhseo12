@@ -1,5 +1,0 @@
-package store
-
-class InputTest {
-
-}

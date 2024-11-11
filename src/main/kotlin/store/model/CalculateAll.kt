@@ -7,9 +7,9 @@ class CalculateAll(
     private val buyItem: List<Item>,
     private val promotionCount: MutableMap<String, Int>
 ) {
-    var allPrice = 0
-    var allPromotionPrice = 0
-    var allNoPromotionPrice = 0
+    var allPrice = INIT_VALUE
+    var allPromotionPrice = INIT_VALUE
+    var allNoPromotionPrice = INIT_VALUE
 
     init {
         calculate()
@@ -50,11 +50,16 @@ class CalculateAll(
     }
 
     private fun eachNoPromotion(key: String, value: Int) {
-        if (buyItem.filter { it.name == key }.size == 1) {
+        if (buyItem.filter { it.name == key }.size == NO_PROMOTION_ITEM_SIZE) {
             val price = buyItem.find { it.name == key }?.price?.times(value)
             if (price != null) {
                 allNoPromotionPrice += price
             }
         }
+    }
+
+    companion object {
+        private const val INIT_VALUE = 0
+        private const val NO_PROMOTION_ITEM_SIZE = 1
     }
 }

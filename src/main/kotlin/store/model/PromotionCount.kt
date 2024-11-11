@@ -11,7 +11,7 @@ class PromotionCount {
         val promotionValue = mutableMapOf<String, Int>()
         order.forEach { (key, value) ->
             val lookItem = buyItem.filter { it.name == key }
-            val promotionItem = lookItem.find { it.promotion != "null" }
+            val promotionItem = lookItem.find { it.promotion != NULL }
             if (promotionItem != null) {
                 checkPromotionItem(promotions, promotionItem, value, promotionValue)
             }
@@ -25,14 +25,21 @@ class PromotionCount {
         value: Int,
         promotionValue: MutableMap<String, Int>
     ) {
-        val getPromotion = promotions.find { it[0].contains(promotionItem.promotion) }
+        val getPromotion = promotions.find { it[PROMOTION_NAME].contains(promotionItem.promotion) }
         if (getPromotion != null) {
-            val buy = getPromotion[1].toInt()
-            val get = getPromotion[2].toInt()
+            val buy = getPromotion[PROMOTION_BUY].toInt()
+            val get = getPromotion[PROMOTION_GET].toInt()
             if (promotionItem.quantity >= value) {
                 val quantity = value / (buy + get)
                 promotionValue[promotionItem.name] = quantity
             }
         }
+    }
+
+    companion object {
+        private const val NULL = "null"
+        private const val PROMOTION_NAME = 0
+        private const val PROMOTION_BUY = 1
+        private const val PROMOTION_GET = 2
     }
 }

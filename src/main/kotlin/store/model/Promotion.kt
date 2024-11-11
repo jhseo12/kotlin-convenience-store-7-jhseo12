@@ -6,7 +6,7 @@ import java.io.InputStreamReader
 import java.text.SimpleDateFormat
 
 class Promotion() {
-    private val nowPromotion = "/promotions.md"
+    private val nowPromotion = GET_PROMOTION
     private val readPromotion = mutableListOf<MutableList<String>>()
     val promotions = mutableListOf<MutableList<String>>()
 
@@ -46,7 +46,7 @@ class Promotion() {
 
             val promotion = mutableListOf<String>()
             setPromotion(startDate, endDate, date, eachPromotion, promotion)
-            if(promotion.size == 3) {
+            if (promotion.size == 3) {
                 promotions.add(promotion)
             }
         }
@@ -64,5 +64,9 @@ class Promotion() {
             promotion.add(eachPromotion[1])
             promotion.add(eachPromotion[2])
         }
+    }
+
+    companion object {
+        private const val GET_PROMOTION = "/promotions.md"
     }
 }

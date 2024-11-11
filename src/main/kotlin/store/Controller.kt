@@ -19,7 +19,7 @@ class Controller {
             val stock = showStock(infoStock)
             val promotions = Promotion().promotions
             val order = pointOfSales(stock, promotions)
-            if (keepShopping() == "N") break
+            if (keepShopping() == NO) break
             StockUpdate(stock, order, promotions)
         }
     }
@@ -59,7 +59,7 @@ class Controller {
     ) {
         order.forEach { (item, value) ->
             val orderStock = buyItem.filter { it.name.contains(item) }
-            if (orderStock.size == 2) {
+            if (orderStock.size == TWO) {
                 onlyPromotion(item, value, order, orderStock, promotions)
             }
         }
@@ -73,13 +73,13 @@ class Controller {
         promotions: List<List<String>>
     ) {
         val promotion = checkPromotion.promotionItem(value, orderStock, promotions)
-        if (promotion[1] == 0) {
-            if (promotion[0] != 0) {
+        if (promotion[ONE] == ZERO) {
+            if (promotion[ZERO] != ZERO) {
                 addPromotion(order, item, promotion)
             }
         }
-        if (promotion[1] == 1) {
-            if (promotion[0] != 0) {
+        if (promotion[ONE] == ONE) {
+            if (promotion[ZERO] != ZERO) {
                 noPromotion(order, item, promotion)
             }
         }
@@ -87,11 +87,11 @@ class Controller {
 
     private fun addPromotion(order: MutableMap<String, Int>, item: String, promotion: List<Int>) {
         while (true) {
-            val isAdd = inputView.readAddPromotion(item, promotion[0])
+            val isAdd = inputView.readAddPromotion(item, promotion[ZERO])
             val repeat = validator.validatePromotionInput(isAdd)
             if (repeat) continue
-            if (isAdd == "Y") { // 무료 수량 추가
-                order[item] = order[item]!! + promotion[0]
+            if (isAdd == YES) {
+                order[item] = order[item]!! + promotion[ZERO]
             }
             break
         }
@@ -99,11 +99,11 @@ class Controller {
 
     private fun noPromotion(order: MutableMap<String, Int>, item: String, promotion: List<Int>) {
         while (true) {
-            val isPromotion = inputView.readNoPromotion(item, promotion[0])
+            val isPromotion = inputView.readNoPromotion(item, promotion[ZERO])
             val repeat = validator.validatePromotionInput(isPromotion)
             if (repeat) continue
-            if (isPromotion == "N") {
-                order[item] = order[item]!! - promotion[0]
+            if (isPromotion == NO) {
+                order[item] = order[item]!! - promotion[ZERO]
             }
             break
         }
@@ -115,7 +115,7 @@ class Controller {
             val member = inputView.readMemberPromotion()
             val repeat = validator.validatePromotionInput(member)
             if (repeat) continue
-            return if (member == "Y") 1 else 0
+            return if (member == YES) ONE else ZERO
         }
     }
 
@@ -128,7 +128,7 @@ class Controller {
         outputView.printReceiptCategory(order, buyItem)
         val promotionCount = PromotionCount().promotionCount(order, buyItem, promotions)
         outputView.printReceiptPromotion(promotionCount)
-        var allCount = 0
+        var allCount = ZERO
         order.forEach { (_, value) ->
             allCount += value
         }
@@ -139,12 +139,12 @@ class Controller {
     private fun memberReceipt(allCalculate: CalculateAll, member: Int, allCount: Int) {
         val allPrice = allCalculate.allPrice
         val allPromotionPrice = allCalculate.allPromotionPrice
-        if (member == 1) {
+        if (member == ONE) {
             val noPromotion = allCalculate.allNoPromotionPrice
-            val memberPromotion = (noPromotion) * 30 / 100
+            val memberPromotion = (noPromotion) * THIRTY / HUNDRED
             outputView.printReceipt(allCount, allPrice, allPromotionPrice, memberPromotion)
         } else {
-            val memberPromotion = 0
+            val memberPromotion = ZERO
             outputView.printReceipt(allCount, allPrice, allPromotionPrice, memberPromotion)
         }
     }
@@ -156,5 +156,15 @@ class Controller {
             if (repeat) continue
             return isKeep
         }
+    }
+
+    companion object {
+        private const val YES = "Y"
+        private const val NO = "N"
+        private const val ZERO = 0
+        private const val ONE = 1
+        private const val TWO = 2
+        private const val THIRTY = 30
+        private const val HUNDRED = 100
     }
 }

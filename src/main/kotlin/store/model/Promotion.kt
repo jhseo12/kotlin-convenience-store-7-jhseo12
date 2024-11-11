@@ -35,6 +35,10 @@ class Promotion() {
     private fun checkTime() {
         val dateTimes = DateTimes.now().toString().split("T")
         val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+        readPromotion(dateFormat, dateTimes)
+    }
+
+    private fun readPromotion(dateFormat: SimpleDateFormat, dateTimes: List<String>) {
         readPromotion.forEach { eachPromotion ->
             val startDate = dateFormat.parse(eachPromotion[3]).time
             val endDate = dateFormat.parse(eachPromotion[4]).time

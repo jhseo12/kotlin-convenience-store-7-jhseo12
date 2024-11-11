@@ -50,5 +50,4 @@ class CheckPromotion {
         remain.add(2)
         return remain
     }
-
 }

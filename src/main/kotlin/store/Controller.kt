@@ -124,10 +124,14 @@ class Controller {
         val promotionCount = PromotionCount().promotionCount(order, buyItem, promotions)
         outputView.printReceiptPromotion(promotionCount)
         var allCount = 0
-        order.forEach { (item, value) ->
+        order.forEach { (_, value) ->
             allCount += value
         }
         val allCalculate = CalculateAll(order, buyItem, promotionCount)
+        memberReceipt(allCalculate, member, allCount)
+    }
+
+    private fun memberReceipt(allCalculate: CalculateAll, member: Int, allCount: Int) {
         val allPrice = allCalculate.allPrice
         val allPromotionPrice = allCalculate.allPromotionPrice
         if (member == 1) {

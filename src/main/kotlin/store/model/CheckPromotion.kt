@@ -10,49 +10,82 @@ class CheckPromotion {
     ): List<Int> {
         val remain = mutableListOf<Int>()
         val promotionStockList = orderStock.filter { it.promotion != NULL }
-        if (promotionStockList.isEmpty()) {
-            remain.add(0)
-            remain.add(2)
-            return remain
-        }
+        val promotionStock = promotionStockList[ZERO]
+        val promotionNameList = promotions.filter { it[ZERO] == promotionStock.promotion }
+        if (promotionStockList.isEmpty() || promotionNameList.isEmpty()) return addRemain(remain)
+        val promotionName = promotionNameList[ZERO]
+        checkCase(remain, value, promotionStock, promotionName)
+        return addRemain(remain)
+    }
 
-        val promotionStock = promotionStockList[0]
-        val promotionNameList = promotions.filter { it[0] == promotionStock.promotion }
+    private fun addRemain(remain: MutableList<Int>): MutableList<Int> {
+        remain.add(ZERO)
+        remain.add(TWO)
+        return remain
+    }
 
-        if (promotionNameList.isEmpty()) {
-            remain.add(0)
-            remain.add(2)
-            return remain
-        }
+    private fun checkCase(
+        remain: MutableList<Int>,
+        value: Int,
+        promotionStock: Item,
+        promotionName: List<String>
+    ): List<Int> {
+        firstCase(remain, value, promotionStock, promotionName)
+        secondCase(remain, value, promotionStock, promotionName)
+        thirdCase(remain, value, promotionStock, promotionName)
+        return remain
+    }
 
-        val promotionName = promotionNameList[0]
-
-        if (value <= promotionStock.quantity - promotionName[2].toInt()) {
-            if (value % (promotionName[1].toInt() + promotionName[2].toInt()) == promotionName[1].toInt()) {
-                remain.add(promotionName[2].toInt())
-                remain.add(0)
+    private fun firstCase(
+        remain: MutableList<Int>,
+        value: Int,
+        promotionStock: Item,
+        promotionName: List<String>
+    ): List<Int> {
+        if (value <= promotionStock.quantity - promotionName[TWO].toInt()) {
+            if (value % (promotionName[ONE].toInt() + promotionName[TWO].toInt()) == promotionName[ONE].toInt()) {
+                remain.add(promotionName[TWO].toInt())
+                remain.add(ZERO)
                 return remain
             }
         }
-        if (value > promotionStock.quantity - promotionName[2].toInt() && value <= promotionStock.quantity) {
-            remain.add(value % (promotionName[1].toInt() + promotionName[2].toInt()))
-            remain.add(1)
+        return remain
+    }
+
+    private fun secondCase(
+        remain: MutableList<Int>,
+        value: Int,
+        promotionStock: Item,
+        promotionName: List<String>
+    ): List<Int> {
+        if (value > promotionStock.quantity - promotionName[TWO].toInt() && value <= promotionStock.quantity) {
+            remain.add(value % (promotionName[TWO].toInt() + promotionName[TWO].toInt()))
+            remain.add(ONE)
             return remain
         }
+        return remain
+    }
+
+    private fun thirdCase(
+        remain: MutableList<Int>,
+        value: Int,
+        promotionStock: Item,
+        promotionName: List<String>
+    ): List<Int> {
         if (value > promotionStock.quantity) {
             remain.add(
-                value % (promotionName[1].toInt() + promotionName[2].toInt()) + (promotionStock.quantity - value)
+                value % (promotionName[ONE].toInt() + promotionName[TWO].toInt()) + (promotionStock.quantity - value)
             )
-            remain.add(1)
+            remain.add(ONE)
             return remain
         }
-        remain.add(0)
-        remain.add(2)
         return remain
     }
 
     companion object {
         private const val NULL = "null"
-        private const val ADD = 0
+        private const val ZERO = 0
+        private const val ONE = 1
+        private const val TWO = 2
     }
 }

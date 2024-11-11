@@ -6,7 +6,7 @@ import store.utils.Item
 class Validator {
     fun overStock(order: MutableMap<String, Int>, stock: List<Item>) {
         order.forEach { (name, value) ->
-            var allStock = 0
+            var allStock = ZERO
             stock.filter { it.name == name }.forEach { item ->
                 allStock += item.quantity
             }
@@ -19,7 +19,7 @@ class Validator {
     fun validatePromotionInput(input: String): Boolean {
         var repeat = false
         try {
-            if (!(input == "Y" || input == "N")) {
+            if (!(input == YES || input == NO)) {
                 throw IllegalArgumentException(ErrorMessages.WRONG_INPUT.message)
             }
         } catch (error: IllegalArgumentException) {
@@ -27,5 +27,11 @@ class Validator {
             repeat = true
         }
         return repeat
+    }
+
+    companion object {
+        private const val ZERO = 0
+        private const val YES = "Y"
+        private const val NO = "N"
     }
 }

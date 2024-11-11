@@ -26,37 +26,46 @@ class Stock {
     private fun getStockName(reader: BufferedReader): MutableList<MutableList<String>> {
         val readFile = mutableListOf<MutableList<String>>()
         reader.lineSequence().forEach { line ->
-            readFile.add(line.split(",").map { it.trim() }.toMutableList())
+            readFile.add(line.split(DIVIDER).map { it.trim() }.toMutableList())
         }
         return readFile
     }
 
-    fun getStock(readFile: MutableList<MutableList<String>>) {
-        val items = readFile.map { it[0] }.distinct()
+    private fun getStock(readFile: MutableList<MutableList<String>>) {
+        val items = readFile.map { it[ZERO] }.distinct()
         items.forEach { item ->
-            val lookItem = readFile.filter { it[0].contains(item) }
+            val lookItem = readFile.filter { it[ZERO].contains(item) }
             checkPromotionStock(item, lookItem)
         }
     }
 
     private fun checkPromotionStock(item: String, lookItem: List<MutableList<String>>) {
-        if (lookItem.size == 2) {
-            val promotionItem = lookItem.find { it[3] != "null" }
-            val normalItem = lookItem.find { it[3] == "null" }
-            if (promotionItem != null) {
-                addStock(item, promotionItem[1].toInt(), promotionItem[2].toInt(), promotionItem[3])
+        sizeOne(item, lookItem)
+        sizeTwo(item, lookItem)
+    }
+
+    private fun sizeOne(item: String, lookItem: List<MutableList<String>>) {
+        if (lookItem.size == ONE) {
+            val singleItem = lookItem[ZERO]
+            if (singleItem[THREE] == NULL) {
+                addStock(item, singleItem[ONE].toInt(), singleItem[TWO].toInt(), NULL)
             }
-            if (normalItem != null) {
-                addStock(item, normalItem[1].toInt(), normalItem[2].toInt(), "null")
+            if (singleItem[THREE] != NULL) {
+                addStock(item, singleItem[ONE].toInt(), singleItem[TWO].toInt(), singleItem[THREE])
+                addStock(item, singleItem[ONE].toInt(), ZERO, NULL)
             }
         }
-        if (lookItem.size == 1) {
-            val singleItem = lookItem[0]
-            if (singleItem[3] == "null") {
-                addStock(item, singleItem[1].toInt(), singleItem[2].toInt(), "null")
-            } else {
-                addStock(item, singleItem[1].toInt(), singleItem[2].toInt(), singleItem[3])
-                addStock(item, singleItem[1].toInt(), 0, "null")
+    }
+
+    private fun sizeTwo(item: String, lookItem: List<MutableList<String>>) {
+        if (lookItem.size == TWO) {
+            val promotionItem = lookItem.find { it[THREE] != NULL }
+            val normalItem = lookItem.find { it[THREE] == NULL }
+            if (promotionItem != null) {
+                addStock(item, promotionItem[ONE].toInt(), promotionItem[TWO].toInt(), promotionItem[THREE])
+            }
+            if (normalItem != null) {
+                addStock(item, normalItem[ONE].toInt(), normalItem[TWO].toInt(), NULL)
             }
         }
     }
@@ -69,5 +78,11 @@ class Stock {
 
     companion object {
         private const val GET_STOCKS = "/products.md"
+        private const val DIVIDER = ","
+        private const val NULL = "null"
+        private const val ZERO = 0
+        private const val ONE = 1
+        private const val TWO = 2
+        private const val THREE = 3
     }
 }

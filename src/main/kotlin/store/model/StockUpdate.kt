@@ -15,21 +15,32 @@ class StockUpdate(
         order.forEach { (name, value) ->
             val itemPromotion = stock
                 .filter { it.name == name }
-                .find { it.promotion != "null" } // 해당 구매 아이템 중 프로모션 적용중인 상품
+                .find { it.promotion != NULL }
             val itemNoPromotion = stock
                 .filter { it.name == name }
-                .find { it.promotion == "null" } // 해당 구매 아이템 중 프로모션 미적용중인 상품
+                .find { it.promotion == NULL }
             val promotionValue = itemPromotion?.quantity
-            if (promotionValue!! >= value) {
-                itemPromotion.quantity -= value
-            }
-            if (promotionValue < value) {
-                val promotion = promotions.find { it[0] == itemPromotion.promotion }
-                val leftBuyPromotion = promotionValue % (promotion?.get(1)!!.toInt() + promotion[2].toInt())
-                itemPromotion.quantity = 0
-                itemNoPromotion!!.quantity += leftBuyPromotion
-                itemNoPromotion!!.quantity -= value - (promotionValue - leftBuyPromotion)
-            }
+            updateStock(promotionValue, value, itemPromotion, itemNoPromotion)
         }
+    }
+
+    private fun updateStock(promotionValue: Int?, value: Int, itemPromotion: Item?, itemNoPromotion: Item?) {
+        if (promotionValue!! >= value) {
+            itemPromotion!!.quantity -= value
+        }
+        if (promotionValue < value) {
+            val promotion = promotions.find { it[ZERO] == itemPromotion!!.promotion }
+            val leftBuyPromotion = promotionValue % (promotion?.get(ONE)!!.toInt() + promotion[TWO].toInt())
+            itemPromotion!!.quantity = ZERO
+            itemNoPromotion!!.quantity += leftBuyPromotion
+            itemNoPromotion!!.quantity -= value - (promotionValue - leftBuyPromotion)
+        }
+    }
+
+    companion object {
+        private const val NULL = "null"
+        private const val ZERO = 0
+        private const val ONE = 1
+        private const val TWO = 2
     }
 }

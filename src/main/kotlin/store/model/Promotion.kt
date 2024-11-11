@@ -27,28 +27,26 @@ class Promotion() {
 
     private fun getPromotion(reader: BufferedReader) {
         reader.lineSequence().forEach { line ->
-            val linePromotion = line.split(",").toMutableList()
+            val linePromotion = line.split(DIVIDER).toMutableList()
             readPromotion.add(linePromotion)
         }
     }
 
     private fun checkTime() {
-        val dateTimes = DateTimes.now().toString().split("T")
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val dateTimes = DateTimes.now().toString().split(DATE_DIVIDER)
+        val dateFormat = SimpleDateFormat(DATE_FORM)
         readPromotion(dateFormat, dateTimes)
     }
 
     private fun readPromotion(dateFormat: SimpleDateFormat, dateTimes: List<String>) {
         readPromotion.forEach { eachPromotion ->
-            val startDate = dateFormat.parse(eachPromotion[3]).time
-            val endDate = dateFormat.parse(eachPromotion[4]).time
-            val date = dateFormat.parse(dateTimes[0]).time
+            val startDate = dateFormat.parse(eachPromotion[THREE]).time
+            val endDate = dateFormat.parse(eachPromotion[FOUR]).time
+            val date = dateFormat.parse(dateTimes[ZERO]).time
 
             val promotion = mutableListOf<String>()
             setPromotion(startDate, endDate, date, eachPromotion, promotion)
-            if (promotion.size == 3) {
-                promotions.add(promotion)
-            }
+            if (promotion.size == THREE) promotions.add(promotion)
         }
     }
 
@@ -60,13 +58,21 @@ class Promotion() {
         promotion: MutableList<String>
     ) {
         if (date in startDate..endDate) {
-            promotion.add(eachPromotion[0])
-            promotion.add(eachPromotion[1])
-            promotion.add(eachPromotion[2])
+            promotion.add(eachPromotion[ZERO])
+            promotion.add(eachPromotion[ONE])
+            promotion.add(eachPromotion[TWO])
         }
     }
 
     companion object {
         private const val GET_PROMOTION = "/promotions.md"
+        private const val DIVIDER = ","
+        private const val DATE_DIVIDER = "T"
+        private const val DATE_FORM = "yyyy-MM-dd"
+        private const val ZERO = 0
+        private const val ONE = 1
+        private const val TWO = 2
+        private const val THREE = 3
+        private const val FOUR = 4
     }
 }

@@ -141,7 +141,8 @@ class Controller {
         val allPromotionPrice = allCalculate.allPromotionPrice
         if (member == ONE) {
             val noPromotion = allCalculate.allNoPromotionPrice
-            val memberPromotion = (noPromotion) * THIRTY / HUNDRED
+            var memberPromotion = (noPromotion) * THIRTY / HUNDRED
+            if (memberPromotion >= 8000) memberPromotion = 8000
             outputView.printReceipt(allCount, allPrice, allPromotionPrice, memberPromotion)
         } else {
             val memberPromotion = ZERO

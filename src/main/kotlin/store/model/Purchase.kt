@@ -11,6 +11,7 @@ class Purchase {
         try {
             order(needs, input)
             val validator = Validator()
+            validator.invalidItem(needs, stock)
             validator.overStock(needs, stock)
             repeat = false
         } catch (error: IllegalArgumentException) {

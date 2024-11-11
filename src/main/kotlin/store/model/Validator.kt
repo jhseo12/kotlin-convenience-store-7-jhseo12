@@ -4,6 +4,15 @@ import store.utils.ErrorMessages
 import store.utils.Item
 
 class Validator {
+    fun invalidItem(order: MutableMap<String, Int>, stock: List<Item>) {
+        order.forEach { (item) ->
+            val findItem = stock.find { it.name == item }
+            if (findItem == null) {
+                throw IllegalArgumentException(ErrorMessages.INVALID_ITEM.message)
+            }
+        }
+    }
+
     fun overStock(order: MutableMap<String, Int>, stock: List<Item>) {
         order.forEach { (name, value) ->
             var allStock = ZERO

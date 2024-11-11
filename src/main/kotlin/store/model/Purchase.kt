@@ -32,6 +32,8 @@ class Purchase {
             }
         } catch (error: NumberFormatException) {
             throw IllegalArgumentException(ErrorMessages.WRONG_INPUT.message)
+        } catch (error: IllegalArgumentException) {
+            throw IllegalArgumentException(error.message)
         }
     }
 

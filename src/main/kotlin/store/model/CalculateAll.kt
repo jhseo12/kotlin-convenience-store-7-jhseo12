@@ -14,6 +14,7 @@ class CalculateAll(
     init {
         calculate()
         calculatePromotion()
+        noPromotion()
     }
 
     private fun calculate() {
